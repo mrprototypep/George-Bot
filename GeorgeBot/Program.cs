@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace George
 {
     public class Program
     {
+        internal static Guid GUID = Guid.NewGuid();
+
         internal static DiscordHandler discordHandler = null;
 
         private static GeorgeDataHandler dataHandler = null;
@@ -14,6 +15,8 @@ namespace George
 
         public static void Main(string[] args)
         {
+            Console.WriteLine($"Started with GUID {GUID}");
+
             Console.CancelKeyPress += (sender, args) =>
             {
                 _quitEvent.Set();

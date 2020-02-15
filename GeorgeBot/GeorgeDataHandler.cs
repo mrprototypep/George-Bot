@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord.WebSocket;
@@ -10,6 +8,8 @@ namespace George
 {
     internal class GeorgeDataHandler
     {
+        private bool paused = false;
+
         private const ulong adminId = 178280670001364993; //ID of whoever the admin is (me, in this case)
 
         private DiscordHandler discord = null;
@@ -111,6 +111,16 @@ namespace George
                     georgeMentioned = true;
             }
 
+            if (paused)
+            {
+                if (georgeMentioned && msg.Content.ToLower().Contains($"cmd:debug unpause {Program.GUID}"))
+                {
+                    paused = false;
+                    discord.SendMessageAsync(msg.Channel, $"Instance {Program.GUID} unpaused");
+                }
+                return null;
+            }
+
             if (georgeMentioned)
             {
                 var text = msg.Content.ToLower();
@@ -141,6 +151,13 @@ namespace George
                                 default:
                                     discord.SendMessageAsync(msg.Channel, "Invalid command, or syntax wrong.");
                                     break;
+                                case "pause":
+                                    if (Program.GUID.Equals(new Guid(command[2])))
+                                    {
+                                        paused = true;
+                                        discord.SendMessageAsync(msg.Channel, $"Instance {Program.GUID} paused");
+                                    }
+                                    break;
                                 case "grantcontrol":
                                     discord.SendMessageAsync(msg.Channel, "Granted local administrative authority.");
                                     DiscordHandler.hasLocalAdmin = true;
@@ -150,7 +167,7 @@ namespace George
                                     DiscordHandler.hasLocalAdmin = false;
                                     break;
                                 case "hi":
-                                    discord.SendMessageAsync(msg.Channel, $"Version: {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version} - Running from: {Environment.MachineName}");
+                                    discord.SendMessageAsync(msg.Channel, $"`{Program.GUID}` - Version: {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version} - Running from: {Environment.MachineName}");
                                     break;
                                 case "guilds":
                                     string guildsString = "Guilds: ";
@@ -308,7 +325,7 @@ namespace George
             else
                 CensorMessage(msg);
 
-            return null;
+            return null; //This is sloppy. Fix this.
         }
     }
 }
