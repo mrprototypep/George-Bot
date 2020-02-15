@@ -1,0 +1,44 @@
+﻿[
+  {
+    "messagesByLanguage": {
+      "en": "Term added to banned words list",
+      "jp": "フレーズは禁止されました"
+    },
+    "MessageID": "TermAdded"
+  },
+  {
+    "messagesByLanguage": {
+      "en": "Term removed from banned words list",
+      "jp": "フレーズは禁止されなくなりました"
+    },
+    "MessageID": "TermRemoved"
+  },
+  {
+    "messagesByLanguage": {
+      "en": "Invalid command",
+      "jp": "そのコマンドは無効です"
+    },
+    "MessageID": "InvalidCommand"
+  },
+  {
+    "messagesByLanguage": {
+      "en": "You do not have permission to execute this command",
+      "jp": "これに対する許可がありません"
+    },
+    "MessageID": "NoPermission"
+  },
+  {
+    "messagesByLanguage": {
+      "en": "Something went wrong - contact administrator",
+      "jp": "何かが機能しませんでした、管理者に連絡してください"
+    },
+    "MessageID": "ErrorGeneric"
+  },
+  {
+    "messagesByLanguage": {
+      "en": "Invalid User ID",
+      "jp": "ユーザーIDが無効です"
+    },
+    "MessageID": "InvalidUserID"
+  }
+]
