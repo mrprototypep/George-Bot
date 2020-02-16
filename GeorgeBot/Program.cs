@@ -46,7 +46,8 @@ namespace George
 
             //Populate guilds
             Console.WriteLine("Collecting server information...");
-            dataHandler.GetGuilds();
+            if (!dataHandler.GetGuilds())
+                throw new Exception("Something went wrong, probably with connecting to Discord.");
 
             _quitEvent.WaitOne();
 
