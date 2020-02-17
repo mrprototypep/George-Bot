@@ -62,7 +62,7 @@ namespace George
         //Attempts to connect to Discord
         internal async Task ConnectAsync()
         {            
-             await client.LoginAsync(TokenType.Bot, _TOKEN);
+            await client.LoginAsync(TokenType.Bot, _TOKEN);
             await client.StartAsync();
         }
     }

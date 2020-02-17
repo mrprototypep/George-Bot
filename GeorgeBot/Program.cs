@@ -49,7 +49,7 @@ namespace George
             if (!dataHandler.GetGuilds())
                 throw new Exception("Something went wrong, probably with connecting to Discord.");
 
-            Console.WriteLine($"Initialization finished in {DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime()} seconds.");
+            Console.WriteLine($"Initialization finished in {DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime()}");
 
             _quitEvent.WaitOne();
 
