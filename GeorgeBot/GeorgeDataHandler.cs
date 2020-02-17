@@ -32,26 +32,19 @@ namespace George
 
         internal bool GetGuilds()
         {
-            for (int i = 0; i < 500; i++)
+            Thread.Sleep(1000);
+            if (discord.client.Guilds.Count == 0)
+                return false;
+            else
             {
-                if (discord.client.Guilds.Count == 0)
+                foreach (var guild in discord.client.Guilds)
                 {
-                    if (i == 50)
-                        Console.WriteLine("Having difficulty retreiving information...");
-                    Thread.Sleep(100);
+                    languageByGuild.Add(guild.Id, "en");
+                    censoredWordsByGuild.Add(guild.Id, new List<string>());
+                    censoredUsersByGuild.Add(guild.Id, new List<ulong>());
                 }
-                else
-                {
-                    foreach (var guild in discord.client.Guilds)
-                    {
-                        languageByGuild.Add(guild.Id, "en");
-                        censoredWordsByGuild.Add(guild.Id, new List<string>());
-                        censoredUsersByGuild.Add(guild.Id, new List<ulong>());
-                    }
-                    return true;
-                }
+                return true;
             }
-            return false;
         }
 
         private async Task Client_LeftGuild(SocketGuild guild) => DeInitGuild(guild.Id);
@@ -99,7 +92,7 @@ namespace George
             }
         }
 
-        internal Task OnMessageReceivedEvent(SocketMessage msg)
+        internal async Task OnMessageReceivedEvent(SocketMessage msg)
         {
             string language;
             languageByGuild.TryGetValue(DiscordHandler.GetGuildFromChannel(msg.Channel).Id, out language);
@@ -118,7 +111,7 @@ namespace George
                     paused = false;
                     discord.SendMessageAsync(msg.Channel, $"Instance {Program.GUID} unpaused");
                 }
-                return null;
+                return;
             }
 
             if (georgeMentioned)
@@ -325,7 +318,7 @@ namespace George
             else
                 CensorMessage(msg);
 
-            return null; //This is sloppy. Fix this.
+            return;
         }
     }
 }

@@ -3,6 +3,7 @@ using Discord.WebSocket;
 using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 namespace George
 {
@@ -59,9 +60,9 @@ namespace George
         }
 
         //Attempts to connect to Discord
-        internal async void Connect()
-        {
-            await client.LoginAsync(TokenType.Bot, _TOKEN);
+        internal async Task ConnectAsync()
+        {            
+             await client.LoginAsync(TokenType.Bot, _TOKEN);
             await client.StartAsync();
         }
     }

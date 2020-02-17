@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace George
 {
@@ -29,13 +31,11 @@ namespace George
 
             //Connect to Discord API
             Console.WriteLine("Connecting to Discord...");
-            try
+            Task connection = discordHandler.ConnectAsync();
+            connection.Wait();
+            if (connection.Exception != null)
             {
-                discordHandler.Connect();
-            }
-            catch (System.Net.Http.HttpRequestException ex)
-            {
-                Console.WriteLine($"Failed to connect to Discord - {ex.Message}");
+                Console.WriteLine($"Something went wrong - {connection.Exception.Message}");
                 return;
             }
 
@@ -49,7 +49,11 @@ namespace George
             if (!dataHandler.GetGuilds())
                 throw new Exception("Something went wrong, probably with connecting to Discord.");
 
+            Console.WriteLine($"Initialization finished in {DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime()} seconds.");
+
             _quitEvent.WaitOne();
+
+            Console.WriteLine("Terminating...");
 
             discordHandler.client.StopAsync();
         }
