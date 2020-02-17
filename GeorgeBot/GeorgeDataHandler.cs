@@ -32,19 +32,13 @@ namespace George
 
         internal bool GetGuilds()
         {
-            Thread.Sleep(1000);
-            if (discord.client.Guilds.Count == 0)
-                return false;
-            else
+            foreach (var guild in discord.client.Guilds)
             {
-                foreach (var guild in discord.client.Guilds)
-                {
-                    languageByGuild.Add(guild.Id, "en");
-                    censoredWordsByGuild.Add(guild.Id, new List<string>());
-                    censoredUsersByGuild.Add(guild.Id, new List<ulong>());
-                }
-                return true;
+                languageByGuild.Add(guild.Id, "en");
+                censoredWordsByGuild.Add(guild.Id, new List<string>());
+                censoredUsersByGuild.Add(guild.Id, new List<ulong>());
             }
+            return true;
         }
 
         private async Task Client_LeftGuild(SocketGuild guild) => DeInitGuild(guild.Id);

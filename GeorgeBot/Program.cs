@@ -28,6 +28,8 @@ namespace George
             //Create DiscordHandler object
             Console.WriteLine("Creating DiscordHandler...");
             discordHandler = new DiscordHandler();
+            discordHandler.client.Connected += async () => { Console.WriteLine("Connected to Discord"); };
+            discordHandler.client.Disconnected += async (ex) => { Console.WriteLine($"Disconnected from Discord - {ex.Message}"); };
 
             //Connect to Discord API
             Console.WriteLine("Connecting to Discord...");
@@ -46,6 +48,16 @@ namespace George
 
             //Populate guilds
             Console.WriteLine("Collecting server information...");
+            if (discordHandler.client.ConnectionState != Discord.ConnectionState.Connected)
+            {
+                ManualResetEvent conn = new ManualResetEvent(false);
+
+                Console.WriteLine("Waiting for Discord connection...");
+                discordHandler.client.Connected += async () => { conn.Set(); };
+
+                conn.WaitOne();
+                Console.WriteLine("Continuing onto populating guilds...");
+            }
             if (!dataHandler.GetGuilds())
                 throw new Exception("Something went wrong, probably with connecting to Discord.");
 
