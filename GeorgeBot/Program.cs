@@ -14,6 +14,7 @@ namespace George
         private static GeorgeDataHandler dataHandler = null;
 
         private static ManualResetEvent _quitEvent = new ManualResetEvent(false);
+        private static ManualResetEvent _connectionEvent = new ManualResetEvent(false);
 
         public static void Main(string[] args)
         {
@@ -28,13 +29,23 @@ namespace George
             //Create DiscordHandler object
             Console.WriteLine("Creating DiscordHandler...");
             discordHandler = new DiscordHandler();
-            discordHandler.client.Connected += async () => { Console.WriteLine("Connected to Discord"); };
-            discordHandler.client.Disconnected += async (ex) => { Console.WriteLine($"Disconnected from Discord - {ex.Message}"); };
+
+            discordHandler.client.Connected += async () => {
+                Console.WriteLine("Connected to Discord");
+                _connectionEvent.Set();
+            };
+
+            discordHandler.client.Disconnected += async (ex) =>
+            {
+                Console.WriteLine($"Disconnected from Discord - {ex.Message}");
+                Console.WriteLine("Exiting...");
+                return;
+            };
 
             //Connect to Discord API
             Console.WriteLine("Connecting to Discord...");
             Task connection = discordHandler.ConnectAsync();
-            connection.Wait();
+            connection.Wait(10000); //10 second timeout
             if (connection.Exception != null)
             {
                 Console.WriteLine($"Something went wrong - {connection.Exception.Message}");
@@ -47,17 +58,11 @@ namespace George
             discordHandler.client.MessageReceived += dataHandler.OnMessageReceivedEvent;
 
             //Populate guilds
-            Console.WriteLine("Collecting server information...");
             if (discordHandler.client.ConnectionState != Discord.ConnectionState.Connected)
-            {
-                ManualResetEvent conn = new ManualResetEvent(false);
+                Console.WriteLine("Waiting for connection before proceeding...");
+            _connectionEvent.WaitOne(20000); //20 second timeout
 
-                Console.WriteLine("Waiting for Discord connection...");
-                discordHandler.client.Connected += async () => { conn.Set(); };
-
-                conn.WaitOne();
-                Console.WriteLine("Continuing onto populating guilds...");
-            }
+            Console.WriteLine("Collecting server information...");
             if (!dataHandler.GetGuilds())
                 throw new Exception("Something went wrong, probably with connecting to Discord.");
 
